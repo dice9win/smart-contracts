@@ -90,13 +90,13 @@ contract Dice9 {
   // The minimum amount of the fee the contract takes (this is required to support small bets)
   uint constant internal HOUSE_EDGE_MINIMUM_AMOUNT = 0.001 ether;
   // The minimum amount wagered that makes the bet play for Jackpot
-  uint constant internal MIN_JACKPOT_BET = 0.01 ether;
+  uint constant internal MIN_JACKPOT_BET = 0.1 ether;
   // The fee taken from player's bet as a contribution to Jackpot fund
   uint constant internal JACKPOT_FEE = 0.001 ether;
   // The probability of any eligible bet to win a Jackpot
-  uint constant internal JACKPOT_MODULO = 10;
+  uint constant internal JACKPOT_MODULO = 1000;
   // The target number to be rolled to win the jackpot
-  uint constant internal JACKPOT_WINNING_OUTCOME = 1;
+  uint constant internal JACKPOT_WINNING_OUTCOME = 888;
   // What percentage does the smart conract take as a processing fee
   uint constant internal HOUSE_EDGE_PERCENT = 1;
   // The denominator of jackpotMultiplier value
@@ -113,22 +113,46 @@ contract Dice9 {
   uint constant internal JACKPOT_PAYTABLE_BASE = 16;
   // The number of epochs to pass before the bet becomes refundable
   uint constant internal REFUNDABLE_BET_EPOCHS_DISTANCE = 2;
-
   // The RSA modulus values as 4 uint256 integers.
-  uint constant internal MODULUS0 = 0xb777176e4f49e324ce0785a8e740fc38a6fcaaae9bc52825f25ecb344b146ba1;
-  uint constant internal MODULUS1 = 0x7a688e7f4f627f71ea9eb01ecdd96f8aceed658d97eb7a4afd339f1e5db6767b;
-  uint constant internal MODULUS2 = 0xe6cec9abb7139987cfef7bda1771817d91c6abfcc0aa4d527f53350ddb9fb88d;
-  uint constant internal MODULUS3 = 0x00d4603d7c50aed5e95a99c464bd05dc507f23e53616c96f6b47b1e62bff93bf;
+  uint constant internal MODULUS0 = 0xc5aa5c8027079554ab25d5bdefe5b9bf2b1d77adb5f0494c6f824a86f2929765;
+  uint constant internal MODULUS1 = 0x2f5c423a651e9ff83e212bcf54913be51d501ba52b2d4ba036a9f0b71450cf80;
+  uint constant internal MODULUS2 = 0x04f8ef238e290af91899d1131beecb94b4dc95dd83a04493f54b579a9d833b5d;
+  uint constant internal MODULUS3 = 0x866efeaabcdb9f476f8475939c685871511c2398ee3d48fcd137e62bd0b1f813;
 
-  // A non-interactive zero knowledge proof of the fact that RSA modulus above creates a permutation (see https://github.com/dice9win/ for further details):
-  //  nizk:8:0:HN+IylZLTHXTo2Ap2/1nvNqgN7vBZlSM5Sw7uij5GH0cE6B04wlp7iSvuO79KmukRnXIRyeb0UOUHFNWO5Onb1iXRJq8+0WAECsIPYIImPO9FliFpmHuA6guldlEgPjbod0lWsGUNADJBmfJWIiAe8ODunKq8DtNc0KvsbKdFck=
-  //  nizk:8:1:e6gXMM5mAIXEeph140Bq2lraAkWTA9f46gVS2vY/6bZjosZFD+vBuWNrMwAh0FWBz4G2O1k4TenmsPjMW/QEsioTK97C/Nxx3hYzBv8tksmR9zrqhT/AKrMYf5uaYIzgyp42QKO3MSnn6gHk6c8M87HdVFiCqZxfzES6epTWwkQ=
-  //  nizk:8:2:Fk3gACACbvky1m3btKWP5wglX5qw+hypx3vLvM3NwmKgFWAyIJSFNObWjbmP80KaOgq33qPjEzi3l0rdlRkpIgcllNEGNp7piyTku9hB0+XG+Ij1DR2/cXKbRiS6L5I/P3U0HAKYRdf7zV+Y2sI9XEg7512I+HTJyxmtL/rv9yY=
-  //  nizk:8:3:nV3yRZO08keyN+F4yj8fcCzMeIVpO2bk0cPjirDokjgz2rncu2/MKVU9r6sTDZrevXnt5hOIjiU5YHooh973bDrpxTTfX9O+wic0LiD1pTmYt66F3KDcGXgu8+lLxWLqfCMtwX+fOMbXUSjPFxhCawn3l1lSkfaZIVSaTg8x4O0=
-  //  nizk:8:4:Bxk0KZCSMTdF8OEAwV+Mk6LkC9KkqL8eoRVgCef8mqbiBuXokMbUiw4ZIgnp8pN7LOA9PWKI0JI9kVV1Q9XmTaGnEVYGyHWJ8nUQvpc0KA0jOPDPK2l1vyPUmwEdW9hCfdWJfZWCQ0h+jtEpMaFx8MvUEXicLU6rnKcsm+3gpp0=
-  //  nizk:8:5:P+PXhTVNYms2ycduTrlKU6vJVrncPFk4fSwGVc0X/5KnvaQ1BgXM+MpXj7/8dD437ppTFBBoLPL6woYDApO+ka3DgRAkX3k4NV8b+mRF2HGacwMEl1MHuG9UKXVR4fhqYalivLv/1dbpYDUrBJ+Hr4Jal8ZICBIreegwwo6k/xc=
-  //  nizk:8:6:OULC0vzdUsV8mlOvs7Z9ONYGX0x82LpEJD/LAz1BWP99KFUZGDFEi7jHIk/fC3FxvNRMIzXaduPdwmVDdpWviS8wzuqu0AM2P7BVJ8BE0GI5QYCoIy2c0WgR4ncQvl3kCGBoL2IBWYv5vyxR9AwN7Ice8Vm+sZC38b1ouYjQ50o=
-  //  nizk:8:7:W1f1QQZZHVMVyOGtdg2mONQh59zpxqXGGDI3UVEemWWe5IJxTTBi9UJZgtzH/m9lL3jlkOiVD9RPpRQjdBa8NLy9Ns/zEvSAj/zogbnpF00YDx2ypO9KCsHIA3aWzkHtbbi7LqRujdeHSPlEdppDGwZxa4PoWrA/jRIIBlFsssk=
+  /* A non-interactive zero knowledge proof of the fact that RSA modulus above creates a permutation (see https://github.com/dice9win/ for further details):
+   *  nizk:16:0:0:lQ2GqfyhmMtD0WdWVrVmxYThITd6dVuNOasZx3Uvszii5spX8ouwcLHZ7AU+AsR2ZvMT5Ctd+fIoa82+9r/Zyg==
+   *  nizk:16:0:1:qC56TvWFMzSigWfcq/tmN/WiSG+3iVXaYK2XbZIjRvFeG7BSrEnUMpS6RCtbp5L1wR4G1StP8rP+fDgf0Q4wFw==
+   *  nizk:16:1:0:NPwijDGGIvb91xwXoeh4pGQLlCECheCy3OW3YgidOVuJidOIjFWZm8GpzeF18w2FLRcrnsU9pwvQDc/N6P31kg==
+   *  nizk:16:1:1:EeK3ABEq+UkIb4OqkmA/4BI1yHZ5oBSsIccZTkzWTw2Q9FQ8Cgr6NQvcdSaO2EBSomAENjxnK86Q2IlhZbI8lw==
+   *  nizk:16:2:0:VbLVx3JSL5Op/YfL7yQ+oLZGtESfoS4GdlbaC7bIa0K7cWON+ZhG87ueB/xbpzvRXjyb9jMymIitmAV01iJKBQ==
+   *  nizk:16:2:1:Roh1vf++yEBT9Y/Aoj25UfYAMu3M8FQK05ikswTc4kyQKHGkG2huz+kXt2EEtn2E/+7ynzuyybKQ9gCH1lLjYA==
+   *  nizk:16:3:0:9XsnH0saYXO8TdH2EE8E4NWajxDsFlDKJ0OTNLw/6vfh8BDvILkpqMXifDSIiVglqNbPaDvcdRXk7qNvER2Dhg==
+   *  nizk:16:3:1:iDnrg9u7tYJpR6spIVTUnn1W7sFaBePXB/+vhYrP2iMf2kWZLwgmceVyhS/FAK//DSXIq0sHATAGj1gL65sn9A==
+   *  nizk:16:4:0:xKZhPeG7w2/XaELmvrsvQcrjFXmNKKOYrUMDxjDb3W0vJ6rbO2CHx6gaPz5S64OuB6pM1EMVc0GzUiN9MV7u7A==
+   *  nizk:16:4:1:rdGGGUejvJOvOxag4G3vzccQFHmA3Z8qyieUsJ5Fe9ZQpw7w2ohTvtPkMrU6KwEb/xUL5OaR2QPN8zxROkXoTg==
+   *  nizk:16:5:0:pF2MXKaqQG9N9XhCmmLK+vEiPt/e/YfvpwMzsiCPJ0NCRVNZq2wCBdx2kKoMFrb7olpQVgdw/hscdQ54aC9dQA==
+   *  nizk:16:5:1:NiCPtqqntQxvBMglTADw4rMlSYg8oLsGoNiQOmrkBxwu5+4ZuA7zAWGNVnLAIchN1mw/zgyc31z7Yw7yzvDSmA==
+   *  nizk:16:6:0:psARuKLyJY7h7ZBQY3fLx3giZTrJuDrpq1P+DKtGpm9biG9yTiXi/ITsWwxQkCU/cOF4h58nV6Fnm0iZsh89+w==
+   *  nizk:16:6:1:meIjulS4HBqmfa7MmWxddU2fZTZRSNmvJyTEXjeiDAI814mTjH95xvo3rMzfrOF48tONjFdN20GHHn9TJhdGWg==
+   *  nizk:16:7:0:WE4Y9RHRJtsCgZuWhVPDMcHcdK+SMblh8DnGo3ZcdTJL8600B6f6ehRYwIhgmRqSr1XEPZEIYgPC2n8XFvUqRg==
+   *  nizk:16:7:1:gHqtcvrlKG04sLm2SfA0/dMOyhl+HLUfMEd5egcv9qEuhxxGKli0lsGzqvRyxD43RFHGiF7M8EoMaWIgvZmN2w==
+   *  nizk:16:8:0:UON2EHJ6iB0U//XMDgB/DHqFRmpsiBq3zL0Kc4lKG4bBLY0hMVJn6zSVdYL/Dv8DmTKVY52Dn9Lz6kqb+VqLyw==
+   *  nizk:16:8:1:rAesDbjg1edTAWUzYMgQEgRUgdKwc/naDo36UAWsInBm/T/I9hlcgF6rnRJHmM0w2/ciEiwQbHuUnzBKSP+8Yg==
+   *  nizk:16:9:0:ZSjlXAfClb9AdJ50YPbWtwN96nO/bkGdHw6MwcuFbMKJHwxbGGn2on+JSQezfP1FFWZBtTkwU5H2bsNB5c8fsg==
+   *  nizk:16:9:1:dOb7NS/QS6z/kxBVmZLUJ6Y7V9el/HDGEIbmD73/qz1P0cWbRi53C9628c03bKzf6ykydaAS/Fb9HzHal6vpDw==
+   *  nizk:16:10:0:a54ikaihIFQrtN6EWKLlm3ElzP8qIKT+XdJRSQwmd7iYMN0rUL/4uzz1PZwYwzjr6yzWfn8OifW0Mnu8rAsRBw==
+   *  nizk:16:10:1:AOem959GO//rmTtS9eIGizbSt9sU51DetiSw37SHZ2xmug0jTvUyipC67AetlcQKx2ICOY4O4Bn905XobHX2vA==
+   *  nizk:16:11:0:LRch7IkJXFc0QmuSC7h4OQS5o09uh042xnkauJuXrM1TuByP6m6vrQ4dsM9fPcuEL+2QD2dvIncC27kgAJGdmw==
+   *  nizk:16:11:1:RKFldgO0nIU7qMb/ZnSD5ShKyV9khEuJth/ww6YQwHjzgHzrLxiIXVMCAP99Yd4AwYozPWZQadlS80mB9AA6MA==
+   *  nizk:16:12:0:Oo41oPg0wTn5S0bEbfqgDQiCo6DudbKc7VGvK1GoDM1FT81AYR9+AZwVyYyzbRs+mSJMFQzsoVw4X1XPO7FtKA==
+   *  nizk:16:12:1:T0FMmGIiviL7Sucl4IAL087sWU9JzHzR+6I56GAD4WZ3eFyClu8oNk5XSZgmu++8VB600yuyWhMXilSMpLna+g==
+   *  nizk:16:13:0:MaOMKs00AQyT6kwRcrREoxdUrflNVbbVkMYsLUpvGjG89iowQBuWgogbBYiBWhax0AFyAoe+QBr0iD/0qohCRg==
+   *  nizk:16:13:1:uAagTJchq+LLf0rBxehWVoYTZFWIrNIe+k2o2AVkFC9KlKHHTyHGXIF7u3ZJ1IHAczzSVaPnoCTT7gmk4MuJlA==
+   *  nizk:16:14:0:cHLER77YLj1Zy5ndB518oAC6YuOxR2AixKxbp3eaGu4Xk7HQE5SEUS+RWbzQtYOaqRSBAAiBPG4D6ABOuCH93Q==
+   *  nizk:16:14:1:Ogoo4VY5YhWjGxdGGUZvguC9WN4Gcuym746UqbH5A/e/qNE5+BwzyKvd5GnL5g+Y3PHmlwUC+oJD0UKYDgKpgg==
+   *  nizk:16:15:0:dLor43Y5/vJ7rGwseYDAiNCtxrdiljAILeiff4/GvWhoD4Dhx9DNM/bH+rJ1MnQSKUBJM59pRJc5WicVAiLmpg==
+   *  nizk:16:15:1:bnlsC+lecxwwmdLL/XQG3LTDXctBYcy641Eu/eymn48BNw+WPWkzx5BxCKtnMBqDpar8YjFXU6uvatXMzP0U8Q==
+   */
 
   // A structure containing the frequently accessed state of the contract packed into a single 256-bit slot
   // to save on storage gas costs.
@@ -168,7 +192,7 @@ contract Dice9 {
   event Won(bytes32 indexed vrfInputHash, address player, uint playerNonce, uint payment, uint jackpotPayment, string humanReadable);
 
   /**
-   * The event that gets logged when a bet is won.
+   * The event that gets logged when a bet is lost.
    *
    * @param vrfInputHash the hash of bet attributes (see VRF.sol).
    * @param player the address that placed the bet.
@@ -235,6 +259,14 @@ contract Dice9 {
   }
 
   /**
+   * The modifier checking that the transaction originates from the EOA (externally owned account).
+   */
+  modifier onlyEOA {
+      require(tx.origin == msg.sender, "Only externally owned account (EOA) can do this");
+      _;
+  }
+
+  /**
    * Constructs the new instance of the contract by setting the default values for contract settings.
    */
   constructor() payable {
@@ -256,7 +288,7 @@ contract Dice9 {
    *
    * @param options human-readable string of options to lace a bet on.
    */
-  function playCoinFlip(uint /* unusedBetId */, string calldata options) external payable {
+  function playCoinFlip(uint /* unusedBetId */, string calldata options) external onlyEOA payable {
     (uint mask,) = Options.parseOptions(options.toTinyString(), 0, 1);
 
     // make sure there is a single option selected
@@ -278,7 +310,7 @@ contract Dice9 {
    *
    * @param options human-readable string of options to lace a bet on.
    */
-  function playDice(uint /* unusedBetId */, string calldata options) external payable {
+  function playDice(uint /* unusedBetId */, string calldata options) external onlyEOA payable {
     (uint mask,) = Options.parseOptions(options.toTinyString(), 1, 6);
     placeBet(msg.sender, msg.value, GameOptions.toDiceOptions(mask));
   }
@@ -294,7 +326,7 @@ contract Dice9 {
    *
    * @param options human-readable string of options to lace a bet on.
    */
-  function playTwoDice(uint /* unusedBetId */, string calldata options) external payable {
+  function playTwoDice(uint /* unusedBetId */, string calldata options) external onlyEOA payable {
     (uint mask,) = Options.parseOptions(options.toTinyString(), 2, 12);
     placeBet(msg.sender, msg.value, GameOptions.toTwoDiceOptions(mask));
   }
@@ -310,7 +342,7 @@ contract Dice9 {
    *
    * @param options human-readable string of options to lace a bet on.
    */
-  function playEtheroll(uint /* unusedBetId */, string calldata options) external payable {
+  function playEtheroll(uint /* unusedBetId */, string calldata options) external onlyEOA payable {
     (uint mask, uint option) = Options.parseOptions(options.toTinyString(), 3, 97);
 
     // make sure there is a single option selected
@@ -476,9 +508,9 @@ contract Dice9 {
       // compute the total payment
       uint totalPayment = payment + jackpotPayment;
 
-      // invoke the actual funds transfer and revert if it fails for any reason
+      // invoke the actual funds transfer and revert if it fails for a winning bet
       (bool transferSuccess,) = player.call{value: totalPayment + Math.toUint(totalPayment == 0)}("");
-      require(transferSuccess, "Transfer failed!");
+      require(transferSuccess || totalPayment == 0, "Transfer failed!");
     }
 
     // commit summary state to storage
